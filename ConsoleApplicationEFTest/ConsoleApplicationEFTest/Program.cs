@@ -12,14 +12,13 @@ namespace ConsoleApplicationEFTest
         static void Main(string[] args)
         {
             InitData();
-            Console.WriteLine("Result with deleted items:");
-            foreach (var name in DisplayWithDeleted())
+            Console.WriteLine("Result without deleted items:");
+            foreach (var name in DisplayWithoutDeleted())
             {
                 Console.WriteLine(name);
             }
-
-            Console.WriteLine("Result without deleted items:");
-            foreach (var name in DisplayWithoutDeleted())
+            Console.WriteLine("Result with deleted items:");
+            foreach (var name in DisplayWithDeleted())
             {
                 Console.WriteLine(name);
             }
@@ -39,7 +38,6 @@ namespace ConsoleApplicationEFTest
         {
             using (var db = new AppContext())
             {
-                db.SoftDeletableFilter.Enable();
                 return db.Entities.Select(e => e.Name).ToList();
             }
         }

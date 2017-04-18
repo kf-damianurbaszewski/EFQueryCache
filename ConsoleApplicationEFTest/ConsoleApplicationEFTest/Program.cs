@@ -12,34 +12,52 @@ namespace ConsoleApplicationEFTest
         static void Main(string[] args)
         {
             InitData();
-            Console.WriteLine("Result without deleted items:");
-            foreach (var name in DisplayWithoutDeleted())
+            using (var db = new AppContext())
             {
-                Console.WriteLine(name);
+                Console.WriteLine("Result without deleted items:");
+                foreach (var name in DisplayWithoutDeleted(db))
+                {
+                    Console.WriteLine(name);
+                }
+
+                Console.WriteLine("");
+                Console.WriteLine("Result with deleted items:");
+                foreach (var name in DisplayWithDeleted(db))
+                {
+                    Console.WriteLine(name);
+                }
+
+
+                Console.WriteLine("");
+                Console.WriteLine("Result without deleted items:");
+                foreach (var name in DisplayWithoutDeleted(db))
+                {
+                    Console.WriteLine(name);
+                }
+
+
+                Console.WriteLine("");
+                Console.WriteLine("Result with deleted items:");
+                foreach (var name in DisplayWithDeleted(db))
+                {
+                    Console.WriteLine(name);
+                }
+
             }
-            Console.WriteLine("Result with deleted items:");
-            foreach (var name in DisplayWithDeleted())
-            {
-                Console.WriteLine(name);
-            }
+
             Console.ReadKey();
         }
 
-        public static List<string> DisplayWithDeleted()
+        public static List<string> DisplayWithDeleted(AppContext db)
         {
-            using (var db = new AppContext())
-            {
-                db.SoftDeletableFilter.Disable();
-                return db.Entities.Select(e => e.Name).ToList();
-            }
+            db.SoftDeletableFilter.Disable();
+            return db.Entities.Select(e => e.Name).ToList();
         }
 
-        public static List<string> DisplayWithoutDeleted()
+        public static List<string> DisplayWithoutDeleted(AppContext db)
         {
-            using (var db = new AppContext())
-            {
-                return db.Entities.Select(e => e.Name).ToList();
-            }
+            db.SoftDeletableFilter.Enable();
+            return db.Entities.Select(e => e.Name).ToList();
         }
 
         public static void InitData()
